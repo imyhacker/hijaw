@@ -1,26 +1,28 @@
 name: Auto commit
 
 on:
-
   push:
     branches:
       - master
       
   schedule:
-  - cron: "1 * * * *"
+    - cron: "1 * * * *"
 
 jobs:
   auto_commit:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2      
+      - uses: actions/checkout@v2
         with:
-         persist-credentials: false
-         fetch-depth: 0
+          persist-credentials: false
+          fetch-depth: 0
 
+      - name: Set up safe directory for Git
+        run: git config --global --add safe.directory /github/workspace
+      
       - name: Modify last update
         run: |
-          d=`date '+%Y-%m-%dT%H:%M:%SZ'`
+          d=$(date '+%Y-%m-%dT%H:%M:%SZ')
           echo $d > LAST_UPDATED
           
       - name: Commit changes
@@ -28,19 +30,17 @@ jobs:
           git config --local user.email "arifarhan1602@gmail.com"
           git config --local user.name "imyhacker"
           git add -A
-          
-          arr[0]="feat: 😂 auto commit"
-          arr[1]="feat: 😱 auto commit"
-          arr[2]="feat: 👿 auto commit"
-          arr[3]="feat: 💩 auto commit"
-          arr[4]="feat: 🙏 auto commit"
-          arr[5]="feat: 🙈 auto commit"
-          arr[6]="feat: 🐐 auto commit"
-          arr[7]="feat: 🚀 auto commit"
-          
-          rand=$[$RANDOM % ${#arr[@]}]
-          
-          git commit -m "${arr[$rand]}"
+
+          messages=("feat: 😂 auto commit"
+                    "feat: 😱 auto commit"
+                    "feat: 👿 auto commit"
+                    "feat: 💩 auto commit"
+                    "feat: 🙏 auto commit"
+                    "feat: 🙈 auto commit"
+                    "feat: 🐐 auto commit"
+                    "feat: 🚀 auto commit")
+
+          git commit -m "${messages[$RANDOM % ${#messages[@]}]}"
           
       - name: GitHub Push
         uses: ad-m/github-push-action@v0.5.0
