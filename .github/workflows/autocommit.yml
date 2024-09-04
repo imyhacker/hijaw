@@ -17,7 +17,7 @@ jobs:
           persist-credentials: false
           fetch-depth: 0
 
-      - name: Set up safe directory for Git
+      - name: Set up safe directory for Gitt
         run: git config --global --add safe.directory /github/workspace
       
       - name: Modify last update
