@@ -30,6 +30,7 @@ jobs:
 
       - name: Commit Changes
         run: |
+          
           git add LAST_UPDATED
           
           messages=("feat: 😂 auto commit"
@@ -42,9 +43,7 @@ jobs:
                     "feat: 🚀 auto commit")
 
           git commit -m "${messages[$RANDOM % ${#messages[@]}]}"
-
+          git push origin master
       - name: Push Changes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git push origin master
