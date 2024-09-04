@@ -1,33 +1,43 @@
-name: Auto commit
+name: Auto Commit
 
+# Triggers the workflow on push to the master branch and on a schedule (every hour).
 on:
   push:
     branches:
       - master
-      
   schedule:
-    - cron: "1 * * * *"
+    - cron: "0 * * * *"  # Runs every hour
 
 jobs:
   auto_commit:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v2
+      # Step to check out the repository
+      - name: Checkout Repository
+        uses: actions/checkout@v2
         with:
           persist-credentials: false
           fetch-depth: 0
 
-      - name: Modify last update
+      # Step to set up Git configuration
+      - name: Set Up Git
         run: |
-          d=$(date '+%Y-%m-%dT%H:%M:%SZ')
-          echo $d > LAST_UPDATED
-          
-      - name: Commit changes
-        run: |
-          git config --local user.email "arifarhan1602@gmail.com"
-          git config --local user.name "imyhacker"
-          git add -A
+          git config --global user.email "arifarhan1602@gmail.com"
+          git config --global user.name "imyhacker"
+          git config --global --add safe.directory /github/workspace
 
+      # Step to modify a file or update content
+      - name: Modify LAST_UPDATED
+        run: |
+          date '+%Y-%m-%dT%H:%M:%SZ' > LAST_UPDATED
+
+      # Step to commit the changes
+      - name: Commit Changes
+        run: |
+          git add LAST_UPDATED
+          
+          # Random commit messages
           messages=("feat: 😂 auto commit"
                     "feat: 😱 auto commit"
                     "feat: 👿 auto commit"
@@ -38,10 +48,11 @@ jobs:
                     "feat: 🚀 auto commit")
 
           git commit -m "${messages[$RANDOM % ${#messages[@]}]}"
-          
-      - name: GitHub Push
+
+      # Step to push the changes to the master branch
+      - name: Push Changes
         uses: ad-m/github-push-action@v0.5.0
         with:
-          force: true
-          directory: "."
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: master
+          force: true
