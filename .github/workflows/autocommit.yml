@@ -45,5 +45,5 @@ jobs:
 
       - name: Push Changes
         run: |
-          git remote set-url origin https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }}
+          git remote set-url origin https://x-access-token:${{ secrets.GAT }}@github.com/${{ github.repository }}
           git push origin master --force
